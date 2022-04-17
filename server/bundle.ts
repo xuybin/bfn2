@@ -36,7 +36,7 @@ export class Bundler {
       stdin: {
         //import { add } from "https://crux.land/api/get/4mPo9z.js"
         contents: `
-        import { add } from "./in.js"
+        import { add } from "https://crux.land/api/get/4mPo9z.js"
         x = add(x, 2);
         console.log(x);
         `,
