@@ -29,20 +29,14 @@ export class Bundler {
   }
 
   async bundle2() {
+    const entryPoints: Record<string, string> = {
+      "in": new URL("./in.ts", import.meta.url).href,
+    };
     const absWorkingDir = Deno.cwd();
     await ensureEsbuildInialized();
     const bundle = await esbuild.build({
       bundle: true,
-      stdin: {
-        //import { add } from "https://crux.land/api/get/4mPo9z.js"
-        contents: `
-        import { add } from "https://crux.land/api/get/4mPo9z.js"
-        x = add(x, 2);
-        console.log(x);
-        `,
-        loader: 'js',
-        resolveDir: Deno.cwd(),
-      },
+      entryPoints,
       format: "esm",
       metafile: true,
       minify: true,
