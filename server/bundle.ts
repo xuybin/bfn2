@@ -28,6 +28,41 @@ export class Bundler {
     this.#islands = islands;
   }
 
+  async bundle2() {
+    const absWorkingDir = Deno.cwd();
+    await ensureEsbuildInialized();
+    const bundle = await esbuild.build({
+      bundle: true,
+      stdin: {
+        //import { add } from "https://crux.land/api/get/4mPo9z.js"
+        contents: `
+        import { add } from "./in.js"
+        x = add(x, 2);
+        console.log(x);
+        `,
+        loader: 'js',
+        resolveDir: Deno.cwd(),
+      },
+      format: "esm",
+      metafile: true,
+      minify: true,
+      outdir: ".",
+      // This is requried to ensure the format of the outputFiles path is the same
+      // between windows and linux
+      absWorkingDir,
+      outfile: "",
+      platform: "neutral",
+      plugins: [denoPlugin({
+        loader:"portable"
+      })],
+      splitting: true,
+      target: ["chrome96", "firefox95", "safari14"],
+      treeShaking: true,
+      write: false,
+    });
+    return bundle.outputFiles[0].contents;
+  }
+
   async bundle() {
     const entryPoints: Record<string, string> = {
       "main": new URL("../runtime/main.ts", import.meta.url).href,
