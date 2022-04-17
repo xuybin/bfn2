@@ -535,8 +535,12 @@ export class ServerContext {
   #bundleAssetRoute = (): router.MatchHandler => {
     return async (_req, _connInfo, params) => {
       const path = `/${params.path}`;
-      //const file = await this.#bundler.get(path);
-      const file = await this.#bundler.bundle2();
+      let file:Uint8Array|null=null;
+      if("/island-counter.js"==path){
+        file = await this.#bundler.bundle2();
+      }else{
+        file = await this.#bundler.get(path);
+      }
       
       let res;
       if (file) {
