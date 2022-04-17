@@ -535,7 +535,9 @@ export class ServerContext {
   #bundleAssetRoute = (): router.MatchHandler => {
     return async (_req, _connInfo, params) => {
       const path = `/${params.path}`;
-      const file = await this.#bundler.get(path);
+      //const file = await this.#bundler.get(path);
+      const file = await this.#bundler.bundle2();
+      
       let res;
       if (file) {
         const headers = new Headers({
